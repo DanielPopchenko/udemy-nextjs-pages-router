@@ -1,7 +1,4 @@
 // ! renderes for /our-domain/
-
-import React, { useEffect, useState } from "react";
-
 import MeetupList from "@/components/meetups/MeetupList";
 
 const DUMMY_MEETUPS = [
@@ -30,18 +27,45 @@ const DUMMY_MEETUPS = [
 		description: "Some third meetup",
 	},
 ];
-const HomePage = () => {
-	const [loadedMeetups, setLoadedMeetups] = useState([]);
+// ! here in props we can find our meetups that were preexecuted while building a project
+const HomePage = (props) => {
+	// const [loadedMeetups, setLoadedMeetups] = useState([]);
 
-	useEffect(() => {
-		setLoadedMeetups(DUMMY_MEETUPS);
-	}, []);
+	// useEffect(() => {
+	// 	setLoadedMeetups(DUMMY_MEETUPS);
+	// }, []);
 
 	return (
 		<>
-			<MeetupList meetups={loadedMeetups} />
+			<MeetupList meetups={props.meetups} />
 		</>
 	);
 };
+
+// ! this function will be executed first, before even a component function
+// ? Code here will never be executed on the client side, it is executed while building a project.
+export const getStaticProps = () => {
+	// fetch or read data
+	// ! alawys returns an obj
+	return {
+		props: {
+			meetups: DUMMY_MEETUPS,
+		},
+		// ! now our page will be regenerated every 10 sec on a server
+		// for a data revalidation
+		revalidate: 10,
+	};
+};
+
+// ?as an alternative
+// ! It runs for every request
+// export const gerServerSideProps = async (context) => {
+// 	const request = context.req;
+// 	const response = context.res;
+
+// 	return {
+// 		//...
+// 	};
+// };
 
 export default HomePage;
